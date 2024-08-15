@@ -27,7 +27,9 @@ object NotificationHelper {
             createChannel(notificationManager)
         }
 
-        val chooseContactIntent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+        val chooseContactIntent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI).apply {
+            flags = flags or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
             context,

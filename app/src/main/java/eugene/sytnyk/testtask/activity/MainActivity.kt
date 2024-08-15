@@ -47,9 +47,9 @@ class MainActivity : AppCompatActivity() {
             ).collect { action ->
                 when (action) {
                     is ActionUI.Animation -> performAnimation()
-                    is ActionUI.Call -> ActionHelper.openChooseContact(this@MainActivity, action)
+                    is ActionUI.Call -> ActionHelper.openChooseContact(this@MainActivity)
                     is ActionUI.Notification -> showNotification(action)
-                    is ActionUI.ToastMessage -> ActionHelper.showToast(this@MainActivity, action)
+                    is ActionUI.ToastMessage -> ActionHelper.showToast(this@MainActivity, action.message)
                 }
             }
         }
