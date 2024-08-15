@@ -1,22 +1,30 @@
 package eugene.sytnyk.testtask.activity
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import eugene.sytnyk.testtask.repository.ActionDataRepository
+import eugene.sytnyk.testtask.model.ActionUI
+import eugene.sytnyk.testtask.usecase.GetActionUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val actionDataRepository: ActionDataRepository
+    private val getActionUseCase: GetActionUseCase
 ) : ViewModel() {
 
-    fun test() {
+    private val _actionEvent: MutableSharedFlow<ActionUI> = MutableSharedFlow(extraBufferCapacity = 1)
+    val event: SharedFlow<ActionUI> = _actionEvent.asSharedFlow()
+
+    fun onButtonClick() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("MYOWNTAG", actionDataRepository.getActionData().toString())
+            // TODO we should add handling for empty case
+            val action = getActionUseCase.getAction() ?: return@launch
+            _actionEvent.emit(action)
         }
     }
 }
