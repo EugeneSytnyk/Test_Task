@@ -41,7 +41,7 @@ class GetActionUseCase @Inject constructor(
     private suspend fun lastUsageTimeMeetsCondition(type: String, coolDown: Long): Boolean {
         val currentTime = System.currentTimeMillis()
         val lastUsage = actionUsageTimeRepository.getLastUsageTimeForActionType(type) ?: return true
-        return currentTime - lastUsage < coolDown
+        return currentTime - lastUsage > coolDown
     }
 
     private fun internetConnectionMeetsCondition(type: String): Boolean {
