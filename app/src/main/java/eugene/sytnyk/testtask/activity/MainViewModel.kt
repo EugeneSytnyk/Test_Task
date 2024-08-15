@@ -17,14 +17,14 @@ class MainViewModel @Inject constructor(
     private val getActionUseCase: GetActionUseCase
 ) : ViewModel() {
 
-    private val _actionEvent: MutableSharedFlow<ActionUI> = MutableSharedFlow(extraBufferCapacity = 1)
-    val event: SharedFlow<ActionUI> = _actionEvent.asSharedFlow()
+    private val _actionEvents: MutableSharedFlow<ActionUI> = MutableSharedFlow(extraBufferCapacity = 1)
+    val actionEvents: SharedFlow<ActionUI> = _actionEvents.asSharedFlow()
 
     fun onButtonClick() {
         viewModelScope.launch(Dispatchers.IO) {
             // TODO we should add handling for empty case
             val action = getActionUseCase.getAction() ?: return@launch
-            _actionEvent.emit(action)
+            _actionEvents.emit(action)
         }
     }
 }

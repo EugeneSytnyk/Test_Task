@@ -6,8 +6,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import eugene.sytnyk.testtask.R
+import eugene.sytnyk.testtask.actionhelper.ActionHelper
+import eugene.sytnyk.testtask.model.ActionUI
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -23,6 +28,25 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        viewModel.test()
+        subscribeToActionEvents()
+    }
+
+    private fun subscribeToActionEvents() {
+        lifecycleScope.launch {
+            viewModel.actionEvents.flowWithLifecycle(
+                lifecycle = this@MainActivity.lifecycle
+            ).collect { action ->
+                when (action) {
+                    is ActionUI.Animation -> performAnimation()
+                    is ActionUI.Call -> ActionHelper.openChooseContact(this@MainActivity, action)
+                    is ActionUI.Notification -> ActionHelper.createNotification(this@MainActivity, action)
+                    is ActionUI.ToastMessage -> ActionHelper.showToast(this@MainActivity, action)
+                }
+            }
+        }
+    }
+
+    private fun performAnimation() {
+        // TODO perform button animation
     }
 }
