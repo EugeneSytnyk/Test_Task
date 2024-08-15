@@ -7,6 +7,7 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -25,6 +26,16 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private lateinit var mainButton: Button
+
+    private val requestNotificationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            showNotification()
+        } else {
+            // Ignore
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 when (action) {
                     is ActionUI.Animation -> performAnimation()
                     is ActionUI.Call -> ActionHelper.openChooseContact(this@MainActivity)
-                    is ActionUI.Notification -> showNotification(action)
+                    is ActionUI.Notification -> tryToShowNotification()
                     is ActionUI.ToastMessage -> ActionHelper.showToast(this@MainActivity, action.message)
                 }
             }
@@ -69,10 +80,17 @@ class MainActivity : AppCompatActivity() {
         mainButton.startAnimation(rotate)
     }
 
-    private fun showNotification(action: ActionUI.Notification) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+    private fun tryToShowNotification() {
+        if (NotificationHelper.isNotificationPermissionGranted(this)) {
+            showNotification()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
-        NotificationHelper.createNotification(this, action.message)
+    }
+
+    private fun showNotification() {
+        NotificationHelper.createNotification(this, "Action is Notification!")
     }
 }

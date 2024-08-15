@@ -8,7 +8,7 @@ fun ActionData.mapTo(): ActionUI? {
         "animation" -> ActionUI.Animation
         "toast" -> ActionUI.ToastMessage("Action is Toast!")
         "call" -> ActionUI.Call
-        "notification" -> ActionUI.Notification("Action is Notification!")
+        "notification" -> ActionUI.Notification
         else -> {
             null // Unsupported type handling
         }

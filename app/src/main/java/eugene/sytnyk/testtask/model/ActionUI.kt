@@ -8,5 +8,5 @@ sealed interface ActionUI {
 
     data object Call : ActionUI
 
-    data class Notification(val message: String) : ActionUI
+    data object Notification : ActionUI
 }

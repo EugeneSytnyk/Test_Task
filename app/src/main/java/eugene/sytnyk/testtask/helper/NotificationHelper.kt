@@ -20,7 +20,7 @@ object NotificationHelper {
     private const val NOTIFICATION_ID = 1
 
     fun createNotification(context: Context, message: String) {
-        if (isPermissionGranted(context).not()) return
+        if (isNotificationPermissionGranted(context).not()) return
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -47,17 +47,7 @@ object NotificationHelper {
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createChannel(notificationManager: NotificationManager) {
-        val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            "Button Actions Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        notificationManager.createNotificationChannel(channel)
-    }
-
-    private fun isPermissionGranted(context: Context): Boolean {
+    fun isNotificationPermissionGranted(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
                 context,
@@ -66,5 +56,15 @@ object NotificationHelper {
         } else {
             true
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createChannel(notificationManager: NotificationManager) {
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            "Button Actions Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        notificationManager.createNotificationChannel(channel)
     }
 }
