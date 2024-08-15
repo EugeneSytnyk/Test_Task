@@ -22,7 +22,6 @@ class MainViewModel @Inject constructor(
 
     fun onButtonClick() {
         viewModelScope.launch(Dispatchers.IO) {
-            // TODO we should add handling for empty case
             val action = getActionUseCase.getAction() ?: return@launch
             _actionEvents.emit(action)
         }
