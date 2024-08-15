@@ -1,5 +1,7 @@
 package eugene.sytnyk.testtask.activity
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
@@ -13,7 +15,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import eugene.sytnyk.testtask.R
-import eugene.sytnyk.testtask.actionhelper.ActionHelper
+import eugene.sytnyk.testtask.helper.ActionHelper
+import eugene.sytnyk.testtask.helper.NotificationHelper
 import eugene.sytnyk.testtask.model.ActionUI
 import kotlinx.coroutines.launch
 
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 when (action) {
                     is ActionUI.Animation -> performAnimation()
                     is ActionUI.Call -> ActionHelper.openChooseContact(this@MainActivity, action)
-                    is ActionUI.Notification -> ActionHelper.createNotification(this@MainActivity, action)
+                    is ActionUI.Notification -> showNotification(action)
                     is ActionUI.ToastMessage -> ActionHelper.showToast(this@MainActivity, action)
                 }
             }
@@ -64,5 +67,12 @@ class MainActivity : AppCompatActivity() {
             duration = 1000
         }
         mainButton.startAnimation(rotate)
+    }
+
+    private fun showNotification(action: ActionUI.Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+        }
+        NotificationHelper.createNotification(this, action.message)
     }
 }
