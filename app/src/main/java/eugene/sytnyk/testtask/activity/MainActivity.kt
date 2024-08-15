@@ -1,6 +1,7 @@
 package eugene.sytnyk.testtask.activity
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        findViewById<Button>(R.id.btnMain).setOnClickListener { viewModel.onButtonClick() }
         subscribeToActionEvents()
     }
 
