@@ -22,7 +22,7 @@ class GetActionUseCase @Inject constructor(
         val actions = actionDataRepository.getActionData().getOrNull() ?: return null
         val selectedAction = actions.filter { it.enabled }
             .sortedByDescending { it.priority }
-            .filter { dataMeetsCondition(it.validDays) }
+            .filter { dateMeetsCondition(it.validDays) }
             .filter { lastUsageTimeMeetsCondition(it.type, it.coolDown) }
             .firstOrNull { internetConnectionMeetsCondition(it.type) } ?: return null
 
@@ -32,7 +32,7 @@ class GetActionUseCase @Inject constructor(
         return selectedAction.mapTo()
     }
 
-    private fun dataMeetsCondition(availableDates: List<Int>): Boolean {
+    private fun dateMeetsCondition(availableDates: List<Int>): Boolean {
         // -1 because calendar returns dates in range 1..7
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
         return availableDates.contains(currentDay)
