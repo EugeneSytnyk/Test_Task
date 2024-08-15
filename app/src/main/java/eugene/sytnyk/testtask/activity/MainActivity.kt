@@ -1,6 +1,8 @@
 package eugene.sytnyk.testtask.activity
 
 import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var mainButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +32,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        findViewById<Button>(R.id.btnMain).setOnClickListener { viewModel.onButtonClick() }
+        mainButton = findViewById(R.id.btnMain)
+        mainButton.setOnClickListener { viewModel.onButtonClick() }
         subscribeToActionEvents()
     }
 
@@ -49,6 +53,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performAnimation() {
-        // TODO perform button animation
+        val rotate = RotateAnimation(
+            0f,
+            360f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        ).apply {
+            duration = 1000
+        }
+        mainButton.startAnimation(rotate)
     }
 }
